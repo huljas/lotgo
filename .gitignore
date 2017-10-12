@@ -1,0 +1,6 @@
+lotgo.iml
+.idea
+vendor
+.gopath~
+
+example/example
