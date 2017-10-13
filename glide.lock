@@ -1,8 +1,20 @@
-hash: 780c776a2dd5e2fd41197ab29e0215768fae7d38987ee2fd5f2233622227bcf3
-updated: 2017-10-12T09:24:34.660947489+03:00
+hash: f0b2df50badb8b4578da43fb1342e8351c73293028ab87fd218b7c5ec72a212c
+updated: 2017-10-12T12:59:28.819173321+03:00
 imports:
+- name: github.com/gizak/termui
+  version: 72304ddb9b4e9838426a021aad64a5a860e98324
+- name: github.com/maruel/panicparse
+  version: e097e77a230345db8ac8961861c81fb509c845c9
+  subpackages:
+  - stack
+- name: github.com/mattn/go-runewidth
+  version: 97311d9f7767e3d6f422ea06661bc2c7a19e8a5d
 - name: github.com/mediocregopher/radix.v2
   version: d234cfb904a91daafa4e1f92599a893b349cc0c2
+- name: github.com/mitchellh/go-wordwrap
+  version: ad45545899c7b13c020ea92b2072220eefad42b8
+- name: github.com/nsf/termbox-go
+  version: d51f2f6d6ccb97dd83ed04ae2f79c34234851f39
 - name: github.com/rcrowley/go-metrics
   version: 1f30fe9094a513ce4c700b9a54458bbb0c96996c
 - name: github.com/Sirupsen/logrus

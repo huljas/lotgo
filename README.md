@@ -1,5 +1,7 @@
 # Lotgo
 
-Load tests in Go!
+Load test tool in Go!
+
+
 
 

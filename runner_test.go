@@ -30,7 +30,7 @@ func (e *myTest) Test(lt *Runner) error {
 func TestRunner_NumberOfTestRunsSingleProc(t *testing.T) {
 	myCount = 0
 	example := &myTest{}
-	runner := New(1, 1000, 0, 0, time.Second, example, nil, nil, 0)
+	runner := New(1, 1000, 0, 0, time.Second, example, nil, nil, 0, false)
 	runner.Run()
 	assert.Equal(t, int32(1000), myCount)
 }
@@ -38,14 +38,13 @@ func TestRunner_NumberOfTestRunsSingleProc(t *testing.T) {
 func TestRunner_RightNumberOfTestRunsMultiProc(t *testing.T) {
 	myCount = 0
 	example := &myTest{}
-	runner := New(20, 500, 0, 0, time.Second, example, nil, nil, 0)
+	runner := New(20, 500, 0, 0, time.Second, example, nil, nil, 0, false)
 	runner.Run()
 	assert.Equal(t, int32(10000), myCount)
 }
 
 func TestRunner_TimeDuration(t *testing.T) {
-	oneSec := time.Now().Add(time.Second)
-	e := &TimeCondition{End: oneSec}
+	e := &TimeCondition{Start: time.Now(), Duration: time.Second}
 	assert.True(t, e.Run())
 	time.Sleep(time.Millisecond * 500)
 	assert.True(t, e.Run())
@@ -56,7 +55,7 @@ func TestRunner_TimeDuration(t *testing.T) {
 func TestRunner_RightDurationOfTestRun(t *testing.T) {
 	ts := time.Now()
 	example := &myTest{}
-	lt := New(20, 0, time.Millisecond*100, 0, time.Second, example, nil, nil, 0)
+	lt := New(20, 0, time.Millisecond*100, 0, time.Second, example, nil, nil, 0, false)
 	lt.Run()
 	d := time.Since(ts)
 	assert.True(t, time.Millisecond*100 < d)
