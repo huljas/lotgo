@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"sync/atomic"
 	"time"
-	"math/rand"
 )
 
 type SleepTest struct {
@@ -28,7 +27,7 @@ func (t *SleepTest) TearDown(tr *lotgo.Runner) {
 }
 
 func (t *SleepTest) Test(tr *lotgo.Runner) error {
-	time.Sleep(time.Duration(float32(t.Sleep) * rand.Float32()))
+	time.Sleep(t.Sleep)
 	return nil
 }
 
@@ -55,7 +54,7 @@ var _ lotgo.LoadTest = &SleepTest{}
 var _ lotgo.LoadTest = &ErrorTest{}
 
 func main() {
-	lotgo.AddTest("example/sleep", &SleepTest{Sleep: time.Second})
+	lotgo.AddTest("example/sleep", &SleepTest{Sleep: time.Millisecond})
 	lotgo.AddTest("example/error", &ErrorTest{Ratio: 2})
 	lotgo.Run()
 }

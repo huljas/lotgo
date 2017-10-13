@@ -20,10 +20,10 @@ type ui struct {
 	errorList    *termui.List
 	throughPut   *termui.LineChart
 
-	start      time.Time
 	totalTimer metrics.Timer
 	lastUpdate time.Time
 	lastCount  int64
+	lastX      float64
 	errors     metrics.Counter
 	lastErrors []string
 }
@@ -113,7 +113,6 @@ func (ui *ui) Loop() {
 
 func (ui *ui) Started(runner *Runner) {
 	ui.runner = runner
-	ui.start = time.Now()
 }
 
 func (ui *ui) Finished() {
@@ -142,20 +141,14 @@ func (ui *ui) Redraw(int) {
 	ui.testProgress.Percent = int(ui.calculateProgress())
 	ui.errorList.Items = ui.lastErrors
 	ui.summaryList.Items = ui.summaryItems()
-	totalCount := ui.totalTimer.Count()
-	if !ui.lastUpdate.IsZero() {
-		count := totalCount - ui.lastCount
-		duration := time.Since(ui.lastUpdate) / time.Second
-		x := float64(count) / float64(duration)
-		xData := ui.throughPut.Data
-		xData = append(xData, x)
-		if len(xData) > THROUGHPUT_COUNT {
-			xData = xData[len(xData) - THROUGHPUT_COUNT:]
-		}
-		ui.throughPut.Data = xData
+
+	xData := ui.throughPut.Data
+	xData = append(xData, ui.lastX)
+	if len(xData) > THROUGHPUT_COUNT {
+		xData = xData[len(xData) - THROUGHPUT_COUNT:]
 	}
-	ui.lastUpdate = time.Now()
-	ui.lastCount = totalCount
+	ui.throughPut.Data = xData
+
 	termui.Render(ui.topText, ui.testProgress, ui.summaryList, ui.errorList, ui.throughPut)
 }
 
@@ -166,20 +159,30 @@ func (ui *ui) calculateProgress() int64 {
 		return count * 100 / int64(total)
 	} else {
 		duration := ui.runner.duration
-		since := time.Since(ui.start)
+		since := time.Since(ui.runner.startTime)
 		return int64(since * 100 / duration)
 	}
 }
 
 func (ui *ui) summaryItems() []string {
+	totalCount := ui.totalTimer.Count()
+	if !ui.lastUpdate.IsZero() {
+		count := totalCount - ui.lastCount
+		duration := time.Since(ui.lastUpdate)
+		ui.lastX = float64(count) / float64(duration) * float64(time.Second)
+	}
+	ui.lastUpdate = time.Now()
+	ui.lastCount = totalCount
+	count := ui.totalTimer.Count()
+	since := time.Since(ui.runner.startTime)
 	return []string{
 		fmt.Sprintf("Test:                %s", testName),
 		fmt.Sprintf("Go max procs:        %d", runtime.GOMAXPROCS(0)),
-		fmt.Sprintf("Clients:             %d", clients),
+		fmt.Sprintf("Clients:             %d / %d", ui.runner.ActiveClients(), clients),
 		fmt.Sprintf("Errors:              %d", ui.errors.Count()),
-		fmt.Sprintf("Successes:           %d", ui.totalTimer.Count()),
-		fmt.Sprintf("Active clients:      %d", ui.runner.ActiveClients()),
-		fmt.Sprintf("Throughput:          %f r/s", ui.totalTimer.Rate1()),
+		fmt.Sprintf("Successes:           %d", count),
+		fmt.Sprintf("Time:                %d ms", since / time.Millisecond),
+		fmt.Sprintf("Throughput:          %f r/s", ui.lastX),
 		fmt.Sprintf("Response time, mean: %f ms", ui.totalTimer.Mean()/1000/1000),
 		fmt.Sprintf("Response time, 75%%:  %f ms", ui.totalTimer.Percentile(0.75)/1000/1000),
 		fmt.Sprintf("Response time, 95%%:  %f ms", ui.totalTimer.Percentile(0.95)/1000/1000),

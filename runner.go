@@ -22,6 +22,7 @@ type Runner struct {
 	activeClients int32
 	allListeners  Listener
 	stopped       bool
+	startTime     time.Time
 }
 
 type EndCondition interface {
@@ -77,13 +78,15 @@ func (runner *Runner) Run() {
 	runner.allListeners.Started(runner)
 	LOG().Infof("Listeners started")
 	LOG().Infof("Runner starting clients")
+	runner.startTime = time.Now()
 	for p := 0; p < runner.clients; p++ {
 		myTest := deepClone(runner.test)
+		rampupDelay := time.Duration(0)
+		if runner.rampup > 0 {
+			rampupDelay = runner.rampup * time.Duration(p) / time.Duration(runner.clients)
+		}
 		go func() {
-			if runner.rampup > 0 {
-				time.Sleep(runner.rampup * time.Duration(p) / time.Duration(runner.clients))
-			}
-			runner.runTest(myTest, setupWG)
+			runner.runTest(myTest, setupWG, rampupDelay)
 			finishedWG.Done()
 		}()
 	}
@@ -96,11 +99,13 @@ func (runner *Runner) Run() {
 	LOG().Infof("Runner run complete")
 }
 
-func (runner *Runner) runTest(test LoadTest, setupWG *sync.WaitGroup) {
+func (runner *Runner) runTest(test LoadTest, setupWG *sync.WaitGroup, rampupDelay time.Duration) {
+	LOG().Debugf("Client starting")
 	end := runner.EndCondition()
 	test.SetUp(runner)
 	defer test.TearDown(runner)
 	setupWG.Done()
+	time.Sleep(rampupDelay)
 	atomic.AddInt32(&runner.activeClients, 1)
 	for end.Run() && !runner.stopped {
 		ts := time.Now()
@@ -115,6 +120,7 @@ func (runner *Runner) runTest(test LoadTest, setupWG *sync.WaitGroup) {
 			time.Sleep(runner.sleep)
 		}
 	}
+	LOG().Debugf("Client done")
 	atomic.AddInt32(&runner.activeClients, -1)
 }
 
@@ -126,7 +132,7 @@ func (runner *Runner) EndCondition() EndCondition {
 	if runner.runs > 0 {
 		return &CountCondition{count: runner.runs}
 	} else {
-		return &TimeCondition{Start: time.Now(), Duration: runner.duration}
+		return &TimeCondition{Start: runner.startTime, Duration: runner.duration}
 	}
 }
 
