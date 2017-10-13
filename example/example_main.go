@@ -5,7 +5,6 @@ import (
 	"github.com/huljas/lotgo"
 	"os"
 	"strconv"
-	"sync/atomic"
 	"time"
 )
 
@@ -32,7 +31,6 @@ func (t *SleepTest) Test(tr *lotgo.Runner) error {
 }
 
 type ErrorTest struct {
-	Ratio int32
 	count int32
 }
 
@@ -43,9 +41,15 @@ func (t *ErrorTest) TearDown(tr *lotgo.Runner) {
 }
 
 func (t *ErrorTest) Test(tr *lotgo.Runner) error {
-	i := atomic.AddInt32(&t.count, 1)
-	if i % t.Ratio == 0 {
-		return errors.New("Error: " + time.Now().String())
+	t.count++
+	if t.count % 10 == 0 {
+		return errors.New("random error")
+	}
+	if t.count % 11 == 0 {
+		return errors.New("weird error")
+	}
+	if t.count % 17 == 0 {
+		return errors.New("system error")
 	}
 	return nil
 }
@@ -54,7 +58,7 @@ var _ lotgo.LoadTest = &SleepTest{}
 var _ lotgo.LoadTest = &ErrorTest{}
 
 func main() {
-	lotgo.AddTest("example/sleep", &SleepTest{Sleep: time.Millisecond})
-	lotgo.AddTest("example/error", &ErrorTest{Ratio: 2})
+	lotgo.AddTest("example/sleep", &SleepTest{Sleep: time.Second})
+	lotgo.AddTest("example/error", &ErrorTest{})
 	lotgo.Run()
 }

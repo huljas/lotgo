@@ -48,7 +48,6 @@ func (ui *ui) Loop() {
 	topText.Height = 3
 	topText.Width = 40
 	topText.TextFgColor = termui.ColorWhite
-	topText.BorderLabel = "Text Box"
 	topText.BorderFg = termui.ColorCyan
 	ui.topText = topText;
 
