@@ -115,10 +115,15 @@ func Run() {
 		LOG().Infof("Started ui")
 		myui.Loop()
 		for !runner.IsDone() {
-			time.Sleep(time.Millisecond*10)
+			time.Sleep(time.Millisecond * 10)
 		}
 		LOG().Infof("Ui finished")
 		LogToErr()
+	} else {
+		LogToErr()
+		for !runner.IsDone() {
+			time.Sleep(time.Millisecond * 10)
+		}
 	}
 	LOG().Infof("Test done!")
 }
