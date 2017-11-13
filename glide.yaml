@@ -6,8 +6,8 @@ import:
 - package: github.com/maruel/panicparse/stack
 - package: github.com/mattn/go-runewidth
 - package: github.com/fasthttp-contrib/websocket
-testImport:
 - package: github.com/stretchr/testify
   subpackages:
   - assert
 - package: github.com/kataras/iris
+- package: github.com/kataras/iris/websocket
