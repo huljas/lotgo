@@ -2,11 +2,11 @@ all: vet build-example test
 
 vet:
 	go vet *.go
-	go vet ws/*.go
+	go vet http/*.go
 
 build-example:
 	cd example && go build
-	cd ws && go build
+	cd http && go build
 
 test:
 	go test
