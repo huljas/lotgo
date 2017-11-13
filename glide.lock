@@ -1,10 +1,20 @@
-hash: f0b2df50badb8b4578da43fb1342e8351c73293028ab87fd218b7c5ec72a212c
-updated: 2017-10-12T12:59:28.819173321+03:00
+hash: 49959e110794afe46385efdcafd83d83ef9b9171933d8f29e53cb7f996ab16e0
+updated: 2017-11-13T09:29:18.889147454+02:00
 imports:
+- name: github.com/fasthttp-contrib/websocket
+  version: 1f3b11f56072ffc1b0d71659cb0162ccb1b60ac5
 - name: github.com/gizak/termui
   version: 72304ddb9b4e9838426a021aad64a5a860e98324
+- name: github.com/klauspost/compress
+  version: ea08389e0dc46025380296f7dd04ab0e8de36adb
+  subpackages:
+  - flate
+  - gzip
+  - zlib
+- name: github.com/klauspost/cpuid
+  version: ae7887de9fa5d2db4eaa8174a7eff2c1ac00f2da
 - name: github.com/maruel/panicparse
-  version: e097e77a230345db8ac8961861c81fb509c845c9
+  version: f6ee1e454807f72b84277a84fc06437081340a1b
   subpackages:
   - stack
 - name: github.com/mattn/go-runewidth
@@ -14,21 +24,28 @@ imports:
 - name: github.com/mitchellh/go-wordwrap
   version: ad45545899c7b13c020ea92b2072220eefad42b8
 - name: github.com/nsf/termbox-go
-  version: d51f2f6d6ccb97dd83ed04ae2f79c34234851f39
+  version: aa4a75b1c20a2b03751b1a9f7e41d58bd6f71c43
 - name: github.com/rcrowley/go-metrics
   version: 1f30fe9094a513ce4c700b9a54458bbb0c96996c
 - name: github.com/Sirupsen/logrus
   version: 89742aefa4b206dcf400792f3bd35b542998eb3b
 - name: github.com/stretchr/testify
-  version: 890a5c3458b43e6104ff5da8dfa139d013d77544
+  version: 2aa2c176b9dab406a6970f6a55f513e8a8c8b18f
   subpackages:
   - assert
+- name: github.com/valyala/bytebufferpool
+  version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
+- name: github.com/valyala/fasthttp
+  version: 51bb00256c3cb0a130d470a087a98684ce003065
+  subpackages:
+  - fasthttputil
+  - stackless
 - name: golang.org/x/crypto
-  version: 9419663f5a44be8b34ca85f08abc5fe1be11f8a3
+  version: 6a293f2d4b14b8e6d3f0539e383f6d0d30fce3fd
   subpackages:
   - ssh/terminal
 - name: golang.org/x/sys
-  version: ebfc5b4631820b793c9010c87fd8fef0f39eb082
+  version: 1e2299c37cc91a509f1b12369872d27be0ce98a6
   subpackages:
   - unix
   - windows

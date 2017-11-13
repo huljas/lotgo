@@ -8,3 +8,4 @@ import:
 - package: github.com/gizak/termui
 - package: github.com/maruel/panicparse/stack
 - package: github.com/mattn/go-runewidth
+- package: github.com/fasthttp-contrib/websocket
