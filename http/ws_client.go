@@ -1,14 +1,14 @@
-package ws
+package client
 
 import (
+	"errors"
 	"fmt"
-	"time"
-	"sync"
-	"io/ioutil"
 	"github.com/Sirupsen/logrus"
 	"github.com/fasthttp-contrib/websocket"
+	"io/ioutil"
 	"net/http"
-	"errors"
+	"sync"
+	"time"
 )
 
 type WSClient struct {
@@ -66,7 +66,7 @@ func (c *WSClient) Close() error {
 		return err
 	}
 	c.wg.Wait()
-	return nil
+	return c.conn.Close()
 }
 
 func (c *WSClient) IsClosed() bool {
@@ -120,11 +120,12 @@ func (c *WSClient) WriteMessage(msg []byte) error {
 	return nil
 }
 
-// Writes a message to the websocket and expect response
-func (c *WSClient) WriteAndReadResponseMessage(msg []byte, expectedId int) ([]byte, error) {
+// Writes a message to the active websocket and expects given response
+func (c *WSClient) WriteAndReadResponseMessage(msg []byte) ([]byte, error) {
 	err := c.WriteMessage(msg)
 	if err != nil {
 		return []byte{}, err
 	}
 	return c.ReadMessage()
 }
+

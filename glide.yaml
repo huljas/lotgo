@@ -1,11 +1,13 @@
 package: github.com/huljas/lotgo
 import:
-- package: github.com/stretchr/testify
-  subpackages:
-  - assert
 - package: github.com/mediocregopher/radix.v2
 - package: gopkg.in/square/go-jose.v1/json
 - package: github.com/gizak/termui
 - package: github.com/maruel/panicparse/stack
 - package: github.com/mattn/go-runewidth
 - package: github.com/fasthttp-contrib/websocket
+testImport:
+- package: github.com/stretchr/testify
+  subpackages:
+  - assert
+- package: github.com/kataras/iris
